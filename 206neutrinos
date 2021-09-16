@@ -1,0 +1,79 @@
+#! /usr/bin/python3
+
+import sys
+import fileinput
+from math import *
+import time
+
+def check_values(string):
+    i = 0
+    already = False
+    
+    while i != len(string):
+        if (string[i] < '0' or string[i] > '9') and string[i] != '.':
+            return False
+        if (string[i] == '.'):
+            if (already == True):
+                return False
+            else:
+                already = True
+        i += 1
+    return True
+
+
+def standard_deviation(value, a, sd, n, old_a):
+    result = pow(sd, 2) * (n-1) + (n -1) * pow(old_a, 2)
+    result += pow(value, 2)
+    result -= n * pow(a, 2)
+    result = sqrt(result / n)
+    return result
+
+def arithmetic_mean(value, a, n):
+    return ((n-1) * a + value) / n
+
+def root_mean_square(a, sd):
+    return sqrt((a**2 + sd**2))
+
+
+def harmonic_mean(value, h, n):
+    return (n / (1/h * (n-1) + 1/value))
+
+def neutrinos():
+    n = float(sys.argv[1])
+    a = float(sys.argv[2])
+    h = float(sys.argv[3])
+    sd = float(sys.argv[4])
+
+    if h == 0:
+        exit(84)
+    while True:
+        line = input("Enter next value: ")
+        if check_values(line) == False:
+            if (line == "END"):
+                exit(0)
+            else:
+                exit(84)
+        else:
+            n += 1
+            old_a = a
+            print("\tNumber of values:\t%d" % (n))
+            a = arithmetic_mean(float(line), a, n)
+            sd = standard_deviation(float(line), a, sd, n, old_a)
+            print("\tStandard deviation:\t%.2f" %(sd))
+            print("\tArithmetic mean:\t%.2f" % (a))
+            print("\tRoot mean square:\t%.2f" % (root_mean_square(a, sd)))
+            h = harmonic_mean(float(line), h, n)
+            print("\tHarmonic mean:\t\t%.2f\n" % (h))
+
+def main():
+    if len(sys.argv) != 5:
+        exit(84)
+    i = 1
+    while (i < 5):
+        if (check_values(sys.argv[i]) == False):
+            exit(84)
+        i += 1
+    neutrinos()
+
+if __name__ == "__main__":
+    main()
